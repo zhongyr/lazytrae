@@ -52,7 +52,7 @@ user requests an effort supported by the actual schema and selected model.
 
 The runtime is `runtime/cli.mjs` relative to this file. Invoke it with Node using
 an absolute path; `lazytrae` is equivalent when this repository is installed with
-`npm install -g .`. Never download an OmO/Codex executable to resolve that name.
+`npm install -g lazytrae`. Never download an OmO/Codex executable to resolve that name.
 All stateful `ulw-loop` commands require `--session-id <id>`. Use the session ID
 from the hook; if unavailable create a UUID and retain it for the entire run.
 

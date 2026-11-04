@@ -10,14 +10,13 @@ import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const bin = join(root, 'bin/lazytrae.js');
-test('native TRAE installs, discovers, upgrades and removes the packaged plugin in isolation', { timeout: 60000 }, async t => {
+test('npm global package installs, discovers, refreshes and removes the native TRAE plugin without a checkout', { timeout: 60000 }, async t => {
   const dir = mkdtempSync(join(tmpdir(), 'lazytrae-host-'));
   const cwd = join(dir, 'project');
   const shared = join(dir, 'trae');
   mkdirSync(cwd);
   mkdirSync(join(shared, 'agents'), { recursive: true });
-  const env = { ...process.env, TRAE_HOME: shared, TRAECLI_HOME: join(shared, 'cli') };
+  const env = { ...process.env, TRAE_HOME: shared, TRAECLI_HOME: join(shared, 'cli'), npm_config_cache: join(dir, 'npm-cache'), npm_config_dry_run: 'false' };
   const config = 'model_provider = "local-probe"\nmodel = "probe"\n[model_providers.local-probe]\nname = "Local probe"\nbase_url = "http://127.0.0.1:1/v1"\nwire_api = "responses"\n';
   const role = '---\nname: personal-reviewer\ndescription: Personal read-only reviewer\nmodel: inherit\n---\nRead only.\n';
   writeFileSync(join(shared, 'traecli.toml'), config);
@@ -30,8 +29,14 @@ test('native TRAE installs, discovers, upgrades and removes the packaged plugin 
     assert.equal(p.status, 0, p.stderr || p.stdout);
     return p.stdout;
   };
-  run(process.execPath, [bin, 'install']);
-  run(process.execPath, [bin, 'install']);
+  const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', dir, root]))[0];
+  const prefix = join(dir, 'npm prefix');
+  run('npm', ['install', '--global', '--prefix', prefix, '--offline', join(dir, packed.filename)]);
+  const bin = join(prefix, 'bin/lazytrae');
+  assert.equal(run(bin, ['--version']).trim(), packed.version);
+  assert.equal(readFileSync(join(shared, 'traecli.toml'), 'utf8'), config, 'npm installation must leave plugin registration to lazytrae install.');
+  run(bin, ['install']);
+  run(bin, ['install']);
   const validation = run('traecli', ['plugin', 'validate', 'lazytrae@lazytrae-local']);
   assert.match(validation, /20 skills/);
   assert.match(validation, /2 MCP servers/);
@@ -74,7 +79,7 @@ test('native TRAE installs, discovers, upgrades and removes the packaged plugin 
     server.kill('SIGTERM');
     await new Promise(resolve => server.exitCode !== null ? resolve() : server.once('exit', resolve));
   }
-  run(process.execPath, [bin, 'uninstall']);
+  run(bin, ['uninstall']);
   assert.ok(readFileSync(join(shared, 'traecli.toml'), 'utf8').startsWith(config));
   assert.equal(readFileSync(join(shared, 'agents/personal-reviewer.md'), 'utf8'), role);
   assert.equal(readFileSync(join(cwd, '.omo/keep.txt'), 'utf8'), 'existing evidence');

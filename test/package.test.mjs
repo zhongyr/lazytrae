@@ -11,13 +11,16 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 test('release tarball runs independently of its source checkout', t => {
   const dir = mkdtempSync(join(tmpdir(), 'lazytrae-pack-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
-  const pack = spawnSync('npm', ['pack', '--json', '--pack-destination', dir], { cwd: root, encoding: 'utf8' });
+  const pack = spawnSync('npm', ['pack', '--json', '--dry-run=false', '--pack-destination', dir], {
+    cwd: root, encoding: 'utf8', env: { ...process.env, npm_config_dry_run: 'true' },
+  });
   assert.equal(pack.status, 0, pack.stderr);
   const packed = JSON.parse(pack.stdout)[0];
   const unpack = spawnSync('tar', ['-xzf', join(dir, packed.filename), '-C', dir], { encoding: 'utf8' });
   assert.equal(unpack.status, 0, unpack.stderr);
   const plugin = join(dir, 'package/plugins/lazytrae');
   const manifest = JSON.parse(readFileSync(join(plugin, '.codex-plugin/plugin.json'), 'utf8'));
+  assert.equal(manifest.version, packed.version, 'The bundled plugin must report the npm release version.');
   assert.ok(existsSync(join(plugin, manifest.hooks)));
   assert.ok(existsSync(join(plugin, manifest.mcpServers)));
   for (const name of ['ulw-loop', 'rules', 'comment-checker', 'git-bash-mcp', 'lsp', 'lsp-daemon']) assert.ok(existsSync(join(plugin, 'components', name, 'LICENSE')));

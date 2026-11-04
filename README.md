@@ -8,7 +8,7 @@ project-rule and workflow hooks, the upstream durable goal/evidence engine, and
 bundled LSP/Git Bash MCP servers. It preserves your parent model and permissions;
 permitted child tasks can use available models selected by the routing policy.
 
-This is an initial **0.1.0** port. It is not a benchmarked performance improvement
+The **0.1.1** release includes the complete plugin runtime. It is not a benchmarked performance improvement
 over stock TRAE, Codex, Claude Code or OmO.
 
 ## Install
@@ -17,21 +17,14 @@ Requires Node.js 20+ and a working `traecli` command. Tested with TRAE CLI 0.213
 on macOS. Linux runtime tests run in CI; Windows support is not yet validated.
 
 ```sh
-gh repo clone zhongyr/lazytrae
-cd lazytrae
-node bin/lazytrae.js install
-node bin/lazytrae.js doctor
-```
-
-The generated plugin is committed, so installation needs no build, npm dependency
-download or upstream submodule checkout. For a global `lazytrae` command:
-
-```sh
-npm install -g .
+npm install -g lazytrae --registry=https://registry.npmjs.org/
 lazytrae install
+lazytrae doctor
 ```
 
-No npm-registry package is published by this repository. Use the checkout above.
+The npm package bundles the generated plugin and its runtime dependencies.
+Installing it requires no repository clone, source build or upstream submodule
+checkout. Plugin registration happens when you run `lazytrae install`.
 
 Open a **new TRAE session** and inspect `/skills`, `/agents`, `/mcp` and `/hooks`.
 Review and trust the plugin's hooks through `/hooks` before expecting automatic
@@ -46,7 +39,7 @@ traecli plugin install lazytrae@lazytrae
 traecli plugin validate lazytrae@lazytrae
 ```
 
-The checkout installer uses `lazytrae@lazytrae-local`; the marketplace route uses
+The npm/source installer uses `lazytrae@lazytrae-local`; the marketplace route uses
 `lazytrae@lazytrae`. Use the corresponding name for native validation/removal.
 
 ## Use
@@ -95,7 +88,7 @@ are aliases for the corresponding legacy CLI flags.
 
 Browser automation, dedicated team mode, coding-session history tools, the
 upstream slop-removal workflow and upstream bug-report/contribution automation
-are **not ported in 0.1.0**. Browser/ast-grep/Python/language-server binaries are
+are not currently ported. Browser/ast-grep/Python/language-server binaries are
 not bundled. Remote search MCPs, telemetry, auto-update, Codex bootstrap, forced
 model-default changes, spawn enforcement and the unlimited-budget hook are excluded.
 Automatic per-edit LSP checks are omitted; use the LSP tools explicitly.
@@ -110,9 +103,9 @@ It tries available candidates in order and inherits when none is available.
 These are configurable preferences, not benchmark results.
 
 ```sh
-node bin/lazytrae.js models route --all
-node bin/lazytrae.js models route --role lazytrae-worker-high --provider trae --model Kimi-K3
-node bin/lazytrae.js models route --role lazytrae-worker-high --inherit
+lazytrae models route --all
+lazytrae models route --role lazytrae-worker-high --provider trae --model Kimi-K3
+lazytrae models route --role lazytrae-worker-high --inherit
 ```
 
 Explicit user model choices take precedence and are validated. Native role
@@ -141,9 +134,10 @@ mechanism when explicitly requested. The plugin never extends a user budget.
 ## Update and remove
 
 ```sh
-git pull --ff-only
-node bin/lazytrae.js install
-node bin/lazytrae.js uninstall
+npm install -g lazytrae@latest --registry=https://registry.npmjs.org/
+lazytrae install
+lazytrae uninstall
+npm uninstall -g lazytrae
 ```
 
 Reinstallation refreshes the local plugin. Removal delegates to TRAE and keeps
@@ -152,6 +146,14 @@ repository evidence and user configuration. For a marketplace installation use
 and `traecli plugin uninstall lazytrae@lazytrae` instead.
 
 ## Development and validation
+
+To work on the source or install a development build:
+
+```sh
+git clone https://github.com/zhongyr/lazytrae.git
+cd lazytrae
+node bin/lazytrae.js install
+```
 
 ```sh
 npm ci
@@ -173,6 +175,7 @@ npm run pack:dry-run
 See [port design](docs/port-design.md) and [validation](docs/validation.md).
 Keep the upstream input unchanged and regenerate the port after adapter edits.
 Runtime dependencies are bundled; the root package has no npm dependencies.
+See the [release procedure](docs/releasing.md) for publishing to npm.
 
 ## License
 
