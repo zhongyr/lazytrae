@@ -1,0 +1,4 @@
+interface:
+  display_name: "ulw-research"
+  short_description: "Research a technical question using repository evidence and prim"
+  default_prompt: "Use $ulw-research to handle the requested task with TRAE CLI."

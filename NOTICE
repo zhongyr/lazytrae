@@ -1,0 +1,11 @@
+LazyTrae adapts LazyCodex and oh-my-openagent by Yeongyu Kim and contributors.
+Upstream: https://github.com/code-yeongyu/lazycodex
+Pinned input: 4b08788096abee8e2d728cfb122ac46a57a16c56 (OmO plugin 5.1.60).
+
+The unmodified upstream input remains in plugins/omo. Generated runtime modules
+contain TRAE-specific path, role and handoff adaptations. Original component
+LICENSE and NOTICE files are retained. Frontend references include separately
+licensed material; retain their accompanying license files when redistributing.
+
+LazyTrae is an independent fork and is not an official TRAE, OpenAI or Anthropic
+integration. No comparative performance claim is made.

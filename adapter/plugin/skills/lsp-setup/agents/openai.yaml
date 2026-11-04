@@ -1,0 +1,4 @@
+interface:
+  display_name: "lsp-setup"
+  short_description: "Diagnose or configure language servers for LazyTrae when the use"
+  default_prompt: "Use $lsp-setup to handle the requested task with TRAE CLI."

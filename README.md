@@ -1,279 +1,155 @@
-<div align="center">
-  <img src=".github/assets/omo-icon-light.svg" alt="LazyCodex" width="280">
+# LazyTrae
 
-  <h1>LazyCodex</h1>
+[LazyCodex](https://github.com/code-yeongyu/lazycodex) workflows and evidence loops,
+adapted for **TRAE CLI**. Independent fork; no Codex installation required.
 
-  <p><strong>The one and only agent harness for complex codebases.</strong><br />
-  Project memory, planning, execution, and verified completion inside Codex.</p>
+LazyTrae adds 20 skills, 12 model-inheriting agent roles, project-rule and workflow
+hooks, the upstream durable goal/evidence engine, and bundled LSP/Git Bash MCP
+servers. It uses the model and permissions you already selected in TRAE.
 
-  <p>
-    <a href="https://github.com/code-yeongyu/lazycodex">
-      <img alt="Stars" src="https://img.shields.io/github/stars/code-yeongyu/lazycodex?style=for-the-badge&color=c69ff5&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-  </p>
+This is an initial **0.1.0** port. It is not a benchmarked performance improvement
+over stock TRAE, Codex, Claude Code or OmO.
 
-  <p>
-    <a href="#-what-is-this">What is this?</a>
-    ·
-    <a href="https://github.com/code-yeongyu/oh-my-openagent">OmO</a>
-    ·
-    <a href="https://lazycodex.ai">lazycodex.ai</a>
-  </p>
+## Install
 
-  <br />
-</div>
+Requires Node.js 20+ and a working `traecli` command. Tested with TRAE CLI 0.213.1
+on macOS. Linux runtime tests run in CI; Windows support is not yet validated.
 
-<hr />
-
-> [!NOTE]
-> **[OmO] 60K Stars: the terrifying token burner has arrived in LazyCodex.**
->
-> Sisyphus Labs' OmO is the quality-obsessed agent harness whose public lore says it loved Anthropic models hard enough to get third-party clients blocked. Now that same OmO quality bar is available for Codex through LazyCodex.
->
-> If you wanted OmO but did not want the setup ceremony, start here:
->
-> ```bash
-> npx lazycodex-ai install
-> ```
->
-> Context: [OmO 60K Stars on X](https://x.com/justsisyphus/status/2060210365338939452?s=20)
-
-## 🚀 Install
-
-One line. No global install, no `npm i -g`. Always use `npx`:
-
-```bash
-npx lazycodex-ai install
+```sh
+gh repo clone zhongyr/lazytrae
+cd lazytrae
+node bin/lazytrae.js install
+node bin/lazytrae.js doctor
 ```
 
-This is shorthand for `npx --yes --package oh-my-openagent omo install --platform=codex`. For a fully autonomous, no-TUI setup:
+The generated plugin is committed, so installation needs no build, npm dependency
+download or upstream submodule checkout. For a global `lazytrae` command:
 
-```bash
-npx lazycodex-ai install --no-tui --codex-autonomous
+```sh
+npm install -g .
+lazytrae install
 ```
 
-### Install from the Codex marketplace (experimental)
+No npm-registry package is published by this repository. Use the checkout above.
 
-The npx installer above stays the primary path. As an additive, experimental
-alternative you can install from inside Codex itself: type `/plugins`, open the
-**Add Marketplace** tab ("Add a marketplace from a Git repo or local root."),
-and enter `https://github.com/code-yeongyu/lazycodex`, then install `omo` from
-the `sisyphuslabs` marketplace. Or from the CLI:
+Open a **new TRAE session** and inspect `/skills`, `/agents`, `/mcp` and `/hooks`.
+Review and trust the plugin's hooks through `/hooks` before expecting automatic
+triggers. The installer never writes trust hashes, user agent files, model
+defaults or concurrency settings. Skills remain usable before hooks are trusted.
 
-```bash
-codex plugin marketplace add https://github.com/code-yeongyu/lazycodex
-codex plugin add omo@sisyphuslabs
+Alternatively use the native marketplace:
+
+```sh
+traecli plugin marketplace add https://github.com/zhongyr/lazytrae.git --name lazytrae
+traecli plugin install lazytrae@lazytrae
+traecli plugin validate lazytrae@lazytrae
 ```
 
-On the next launch, approve the omo hooks in Codex's startup review — hooks
-never run before approval. The first approved session prints
-`LazyCodex bootstrap running in background — restart the session when it completes`
-while a background worker finishes the setup (config blocks, agent roles, bin
-links, a pinned `sg` binary for the `ast_grep` MCP); restart when it is done.
-The marketplace path never touches Codex permission settings — autonomous mode
-remains the explicit `npx lazycodex-ai install --no-tui --codex-autonomous`
-choice.
+The checkout installer uses `lazytrae@lazytrae-local`; the marketplace route uses
+`lazytrae@lazytrae`. Use the corresponding name for native validation/removal.
 
-Upgrade with `codex plugin marketplace upgrade sisyphuslabs`. The next startup
-review shows the hooks as **Modified** — expected after every upgrade —
-re-approve them and the following session re-runs bootstrap on the new version.
-If anything looks pending or degraded, `npx lazycodex-ai doctor` explains what
-and why. Full details: [lazycodex.ai/docs](https://lazycodex.ai/docs).
+## Use
 
-### Verify it worked
+Examples to give TRAE:
 
-```bash
-npx lazycodex-ai doctor
+```text
+ulw: fix the parser bug and verify the public CLI behavior.
+Use lazytrae:ulw-plan to plan this migration before changing code.
+Use lazytrae:ulw-execute to implement .omo/plans/migration.md.
+Use lazytrae:review-work to review this diff for regressions.
+Use lazytrae:lsp to find the callers of this symbol.
 ```
 
-`doctor` prints the installation health report: plugin cache, hooks, MCP
-servers, agents, and config state. Inside Codex, type `$` in the composer to
-browse every installed skill — `init-deep`, `ulw-loop`, `ulw-plan`,
-`start-work`, and the rest — and hooks announce themselves with
-`LazyCodex(<version>): ...` status messages during a session.
+Ordinary tasks do not automatically start a loop. For substantial work,
+`ulw-loop` maintains a brief, goals, acceptance criteria and append-only evidence
+ledger in `.omo/ulw-loop/<session-id>/`. Its final checkpoint verifies the supplied
+QA/review artifacts and criterion coverage. A host goal is optional and only
+created on explicit user request; user budgets remain authoritative.
 
-### Uninstall
+Use the installed `lazytrae` command, or `node bin/lazytrae.js` from the checkout:
 
-```bash
-npx lazycodex-ai uninstall
+```sh
+lazytrae ulw-loop help
+lazytrae ulw-loop status --session-id YOUR_SESSION_ID --json
+lazytrae ulw-loop checkpoint --session-id YOUR_SESSION_ID --print-template --json
 ```
 
-Removes the installed plugin cache, bin links, agent roles, and the managed
-sections of `~/.codex/config.toml`.
+The plugin skills resolve their bundled Node runtime directly, so a global npm
+installation is optional. Legacy `codexGoal*` JSON keys remain for upstream state
+compatibility; they do not launch Codex. `--host-goal-json` and `--host-goal-mode`
+are aliases for the corresponding legacy CLI flags.
 
-## ⚡ Commands
+## What is ported
 
-LazyCodex installs these as OmO commands for Codex. Invoke them with the
-`$command` syntax shown by the installer.
-
-| Command | Type this | What it does |
-| --- | --- | --- |
-| `$ulw-loop` | `$ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset\|continue]` | Self-referential loop that runs until Oracle-verified completion. Caps at 500 iterations in ultrawork mode, 100 in normal mode. |
-| `$ulw-plan` | `$ulw-plan "what to build"` | Prometheus strategic planner. Writes a plan to `plans/<slug>.md`. Never writes product code. |
-| `$start-work` | `$start-work [plan-name] [--worktree <path>]` | Executes a plan until every checkbox is done. Prints **ORCHESTRATION COMPLETE**. |
-
-Full documentation lives at [lazycodex.ai/docs](https://lazycodex.ai/docs).
-
-## Use the built-in workflows
-
-LazyCodex should be judged by the features it actually installs. It is the
-Codex distribution for OmO's agent harness: project memory, planning,
-execution, verified completion, skills, hooks, model routing, and diagnostics.
-
-### 1. `$init-deep` creates project memory
-
-`$init-deep` generates hierarchical `AGENTS.md` context. It scores complex
-directories, writes local guidance near the code that needs it, and gives future
-agents landmarks before they edit. Type `$init-deep` in the Codex composer —
-the `$` prefix is how every installed skill is invoked.
-
-Use it when the repository is too large to explain from memory. Run it again
-when the shape of the codebase changes.
-
-### 2. The three command pillars stay up front
-
-Use `$ulw-plan` when the work needs decisions before implementation. It writes a
-plan to `plans/<slug>.md` and does not touch product code.
-
-Use `$start-work` when a plan is ready. It executes the checklist with durable
-Boulder progress and stops only when the plan is complete.
-
-Use `$ulw-loop` when the task should keep moving until the result is verified by
-evidence instead of a hopeful status update.
-
-### 3. Skills cover specialized work
-
-The command layer stays simple. The skill layer adds specialist judgment for the
-actual work:
-
-| Feature | Use it for |
+| Capability | LazyTrae behavior |
 | --- | --- |
-| `$init-deep` | Hierarchical project memory through `AGENTS.md` |
-| `$ulw-plan` | Decision-complete planning before code changes |
-| `$start-work` | Durable plan execution with Boulder progress |
-| `$ulw-loop` | Verified completion for open-ended tasks |
-| `review-work` | Multi-angle post-implementation review |
-| `remove-ai-slops` | Behavior-preserving cleanup of AI-looking code |
-| `frontend-ui-ux` | Polished UI surfaces |
-| `programming` | Strict TypeScript, Rust, Python, or Go discipline |
-| `LSP` | Diagnostics, definitions, references, symbols, and renames |
-| `AST-grep` | Structural search and rewrite across code |
-| `rules` | Project instructions from AGENTS, rules, and instruction files |
-| `comment-checker` | Feedback after edit-like operations |
+| Ultrawork, plan, execute, research | TRAE-native workflows with explicit scope and evidence |
+| Durable goal loop | Upstream engine: session isolation, steering, criteria, retries and quality gates |
+| Worker/explorer/planner/reviewer roles | 12 plugin-contained roles; all inherit the host model |
+| Project rules and comment checking | TRAE event adapters; automated comment checking requires an optional binary |
+| LSP | Bundled MCP daemon; config under `.trae`, existing language servers required |
+| Git Bash | Windows execution; diagnostic tools on macOS/Linux, where the host shell handles commands |
+| Frontend, programming, debugging, data science, ast-grep, Git, evaluation integrity | Upstream skills/resources with TRAE host conventions |
+| Review, refactor, repository guidance, installation diagnostics | Adapted skill entrypoints |
 
-### 4. Sub-agent roles ride Codex's native multi-agent tools
+Browser automation, dedicated team mode, coding-session history tools, the
+upstream slop-removal workflow and upstream bug-report/contribution automation
+are **not ported in 0.1.0**. Browser/ast-grep/Python/language-server binaries are
+not bundled. Remote search MCPs, telemetry, auto-update, Codex bootstrap, forced
+model routing, spawn enforcement and the unlimited-budget hook are excluded.
+Automatic per-edit LSP checks are omitted; use the LSP tools explicitly.
 
-LazyCodex installs selectable agent roles into `~/.codex/agents/`: `explorer`,
-`librarian`, `plan`, `momus`, `metis`, and `codex-ultrawork-reviewer`. Pick one
-by passing `agent_type` to Codex's `spawn_agent` tool — the child agent runs
-with that role's model and instructions:
+Project rules load from `.trae/rules`, `.omo/rules`, `.claude/rules`,
+`.cursor/rules`, `.github/instructions`, `CONTEXT.md` and Copilot instructions.
+Global rules and bundled model personas are not injected by default. For automated
+comment hints, set `LAZYTRAE_COMMENT_CHECKER` to an installed
+[`comment-checker`](https://github.com/code-yeongyu/go-claude-code-comment-checker)
+executable before starting TRAE. Without it, the comment skill remains available
+for manual review and the hook is a no-op.
 
-```jsonc
-spawn_agent({"message": "TASK: map the auth flow end to end.", "agent_type": "explorer"})
+Stop continuation is off by default. Set `LAZYTRAE_CONTINUE=1` when starting TRAE
+to opt into a bounded reminder for unfinished ledger work. It honors
+`stop_hook_active` and records interruptions/cancellation to suppress reminders.
+Use explicit `ulw:` again to resume. Host goals are the preferred persistence
+mechanism when explicitly requested. The plugin never extends a user budget.
+
+## Update and remove
+
+```sh
+git pull --ff-only
+node bin/lazytrae.js install
+node bin/lazytrae.js uninstall
 ```
 
-The installer exposes `agent_type` on `multi_agent_v2` sessions (Codex hides it
-by default). If your Codex build's spawn tool has no `agent_type` parameter,
-describe the role inside `message` instead — the skills are written to fall
-back to that form automatically.
+Reinstallation refreshes the local plugin. Removal delegates to TRAE and keeps
+repository evidence and user configuration. For a marketplace installation use
+`traecli plugin marketplace upgrade lazytrae`, `traecli plugin upgrade lazytrae@lazytrae`
+and `traecli plugin uninstall lazytrae@lazytrae` instead.
 
-Start at [https://lazycodex.ai](https://lazycodex.ai).
+## Development and validation
 
-<hr />
-
-## 💤 What is this?
-
-**LazyCodex** packages [OmO (oh-my-openagent)](https://github.com/code-yeongyu/oh-my-openagent) as the Codex agent harness for complex codebases.
-
-Think [LazyVim](https://github.com/LazyVim/LazyVim) for [lazy.nvim](https://github.com/folke/lazy.nvim), but for Codex.
-
-OmO is the agent harness: discipline agents, parallel orchestration, multi-model routing, skills, hooks, and verified completion. LazyCodex packages that harness for Codex.
-
-> _"LazyVim made Neovim usable for the rest of us. LazyCodex does the same for Codex."_
-
-Credit: The LazyCodex name idea is inspired by [LazyVim](https://github.com/LazyVim/LazyVim). The Ultragoal and UltraQA ideas are inspired by [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), reimplemented from concept for this Codex setup.
-
-## 🧩 What you get
-
-| Feature | Description |
-| --- | --- |
-| 🤖 **Discipline Agents** | Sisyphus orchestrates Hephaestus, Oracle, Librarian. A full AI dev team |
-| 🔀 **Parallel Execution** | Multiple agents working simultaneously on subtasks |
-| 🎯 **Multi-Model Routing** | Automatic model selection per task category |
-| 🛠️ **Skills System** | Extensible skill library for specialized tasks |
-| 📋 **Hooks & Lifecycle** | Pre/post hooks for every agent action |
-| 🔧 **Zero Config** | Sensible defaults, override when you want |
-
-## 🧠 Why different GPT models appear
-
-Do not be surprised if an OmO/LazyCodex run shows models like `gpt-5.2`
-with `xhigh`, `gpt-5.4-mini`, `gpt-5.3-codex`, or newer equivalents like
-`gpt-5.5` with `xhigh`. That is intentional.
-
-OmO does not blindly spend your best model on every subtask. Its source
-defines task categories and fallback chains so the agent can pick the most
-appropriate model for the job: `quick` routes to `gpt-5.4-mini` for small
-edits, `ultrabrain` uses a high-reasoning GPT model for hard logic, and
-agentic coding paths can use Codex-tuned GPT models when available. See
-[`openai-categories.ts`](src/src/tools/delegate-task/openai-categories.ts)
-and [`model-requirements.ts`](src/packages/model-core/src/model-requirements.ts).
-
-The point is quota discipline: use the strongest model when the task needs
-deep reasoning, use a cheaper/faster model when that is enough, and keep
-parallel agent work efficient instead of burning premium quota on routine
-steps. This is benchmark-driven routing, not random model churn:
-
-- [GPT-5.2](https://openai.com/index/introducing-gpt-5-2/) is documented by
-  OpenAI as stronger at code review, bug finding, and complex tool use; the
-  announcement notes that its maximum API reasoning effort uses `xhigh`.
-- [GPT-5.3-Codex](https://developers.openai.com/api/docs/models/gpt-5.3-codex)
-  is OpenAI's Codex-tuned model for agentic software engineering, with public
-  coding-agent benchmarks such as SWE-Bench Pro, Terminal-Bench 2.0, and
-  OSWorld Verified reported in the
-  [GPT-5.3-Codex announcement](https://openai.com/index/introducing-gpt-5-3-codex).
-- [GPT-5.4 mini](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/)
-  is positioned for efficient everyday coding, computer use, and subagents;
-  that is why lightweight OmO tasks can land there instead of spending a
-  frontier reasoning model.
-
-Reference links:
-
-- [OpenAI GPT-5.2 announcement](https://openai.com/index/introducing-gpt-5-2/)
-- [OpenAI GPT-5.2 model docs](https://platform.openai.com/docs/models/gpt-5.2/)
-- [OpenAI GPT-5.3-Codex model docs](https://developers.openai.com/api/docs/models/gpt-5.3-codex)
-- [OpenAI GPT-5.4 mini and nano announcement](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/)
-- [OpenAI latest model guide](https://platform.openai.com/docs/guides/latest-model)
-
-## 🏗️ Architecture
-
-LazyCodex is a thin distribution layer. The core engine is [oh-my-openagent (OmO)](https://github.com/code-yeongyu/oh-my-openagent), included as a submodule under `src/`.
-
-```
-lazycodex/
-├── src/                     → oh-my-openagent (submodule)
-├── packages/
-│   └── web/                 → Next.js 15 + Tailwind v4 + opennextjs-cloudflare
-│                              (deployed to lazycodex.ai via Cloudflare Workers)
-├── .github/workflows/       → web-ci.yml + web-deploy.yml
-├── README.md
-└── ...
+```sh
+npm ci
+npm run build
+npm test
+npm run test:host  # requires traecli; isolated homes and a local dummy provider
+npm run pack:dry-run
 ```
 
-LazyCodex is part of the [omo.dev](https://omo.dev) project. **omo in Codex**, packaged for the lazy.
+- `plugins/omo/`: unchanged input pinned to LazyCodex commit
+  `4b08788096abee8e2d728cfb122ac46a57a16c56` (OmO 5.1.60).
+- `adapter/`: maintained TRAE runtime, skills and host handoff.
+- `scripts/build-plugin.mjs`: explicit reproducible transformations.
+- `plugins/lazytrae/`: generated, installable plugin and release payload.
+- `test/`: real CLI, evidence-gate, MCP transport, tarball and native-host tests.
+- `upstream/` and `test/upstream/`: archived upstream documentation/workflows and
+  alias tests. Upstream publishing and website deployment are disabled here.
 
-## 👷 Maintainer
+See [port design](docs/port-design.md) and [validation](docs/validation.md).
+Keep the upstream input unchanged and regenerate the port after adapter edits.
+Runtime dependencies are bundled; the root package has no npm dependencies.
 
-LazyCodex is maintained by **Jobdori**, the AI assistant that builds and ships [OmO](https://github.com/code-yeongyu/oh-my-openagent) in real-time.
+## License
 
-<div align="center">
-
-[![Sisyphus Labs](.github/assets/sisyphuslabs.png)](https://sisyphuslabs.ai)
-
-> **Meet your own Jobdori, Dori.**
-> **Learn more at [sisyphuslabs.ai](https://sisyphuslabs.ai).**
-
-</div>
-
-## 📄 License
-
-MIT
+MIT, with original LazyCodex/OmO attribution retained. Bundled resources may have
+their own accompanying licenses; see [NOTICE](NOTICE) and the component files.

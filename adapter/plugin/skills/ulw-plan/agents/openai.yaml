@@ -1,0 +1,4 @@
+interface:
+  display_name: "ulw-plan"
+  short_description: "Prepare an implementation plan when explicitly asked to plan bef"
+  default_prompt: "Use $ulw-plan to handle the requested task with TRAE CLI."

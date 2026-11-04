@@ -1,0 +1,4 @@
+interface:
+  display_name: "rules"
+  short_description: "Inspect and use LazyCodex project rule matching through the TRAE"
+  default_prompt: "Use $rules to handle the requested task with TRAE CLI."

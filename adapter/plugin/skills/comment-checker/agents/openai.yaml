@@ -1,0 +1,4 @@
+interface:
+  display_name: "comment-checker"
+  short_description: "Review newly added comments for misleading, redundant or stale e"
+  default_prompt: "Use $comment-checker to handle the requested task with TRAE CLI."

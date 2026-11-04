@@ -1,0 +1,4 @@
+interface:
+  display_name: "lsp"
+  short_description: "Use bundled LSP code intelligence for diagnostics, definitions, "
+  default_prompt: "Use $lsp to handle the requested task with TRAE CLI."

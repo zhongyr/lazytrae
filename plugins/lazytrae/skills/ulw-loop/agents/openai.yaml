@@ -1,0 +1,4 @@
+interface:
+  display_name: "ulw-loop"
+  short_description: "Execute and resume a durable, session-scoped goal ledger with su"
+  default_prompt: "Use $ulw-loop to handle the requested task with TRAE CLI."

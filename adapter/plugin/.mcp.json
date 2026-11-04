@@ -1,0 +1,6 @@
+{
+  "mcpServers": {
+    "git_bash": { "command": "node", "args": ["${PLUGIN_ROOT}/runtime/cli.mjs", "git", "mcp"] },
+    "lsp": { "command": "node", "args": ["${PLUGIN_ROOT}/runtime/cli.mjs", "lsp", "mcp"], "startup_timeout_sec": 20 }
+  }
+}

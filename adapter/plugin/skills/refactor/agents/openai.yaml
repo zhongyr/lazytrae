@@ -1,0 +1,4 @@
+interface:
+  display_name: "refactor"
+  short_description: "Refactor an existing implementation while preserving observable "
+  default_prompt: "Use $refactor to handle the requested task with TRAE CLI."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ultrawork"
+  short_description: "Run evidence-led delivery when the user explicitly requests ulw,"
+  default_prompt: "Use $ultrawork to handle the requested task with TRAE CLI."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ulw-execute"
+  short_description: "Implement an existing plan using evidence and recoverable progre"
+  default_prompt: "Use $ulw-execute to handle the requested task with TRAE CLI."

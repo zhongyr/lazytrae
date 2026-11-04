@@ -1,0 +1,4 @@
+interface:
+  display_name: "lazytrae-doctor"
+  short_description: "Diagnose LazyTrae installation, roles, hook trust, session state"
+  default_prompt: "Use $lazytrae-doctor to handle the requested task with TRAE CLI."

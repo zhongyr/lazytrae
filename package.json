@@ -1,34 +1,19 @@
 {
-  "name": "lazycodex-ai",
-  "version": "0.2.2",
-  "description": "Codex install alias for oh-my-openagent. Run `npx lazycodex-ai install` to set up the Codex platform.",
+  "name": "lazytrae",
+  "version": "0.1.0",
+  "description": "LazyCodex workflows, evidence loops and code intelligence for TRAE CLI",
   "type": "module",
-  "bin": {
-    "lazycodex-ai": "bin/lazycodex-ai.js"
-  },
-  "files": [
-    "bin",
-    "README.md",
-    "LICENSE"
-  ],
+  "bin": { "lazytrae": "bin/lazytrae.js" },
+  "files": ["bin/lazytrae.js", "plugins/lazytrae", "README.md", "LICENSE", "NOTICE"],
   "scripts": {
+    "build": "node scripts/build-plugin.mjs",
     "test": "node --test test/*.test.mjs",
+    "test:host": "node --test test/host/*.test.mjs",
     "pack:dry-run": "npm pack --dry-run"
   },
-  "keywords": [
-    "codex",
-    "oh-my-openagent",
-    "ai-agents",
-    "orchestration"
-  ],
-  "author": "Yeongyu Kim",
+  "engines": { "node": ">=20" },
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/code-yeongyu/lazycodex.git"
-  },
-  "bugs": {
-    "url": "https://github.com/code-yeongyu/lazycodex/issues"
-  },
-  "homepage": "https://lazycodex.ai"
+  "repository": { "type": "git", "url": "git+https://github.com/zhongyr/lazytrae.git" },
+  "bugs": { "url": "https://github.com/zhongyr/lazytrae/issues" },
+  "homepage": "https://github.com/zhongyr/lazytrae#readme"
 }

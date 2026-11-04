@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/code-yeongyu/lazycodex",
+  "commit": "4b08788096abee8e2d728cfb122ac46a57a16c56",
+  "pluginVersion": "5.1.60",
+  "components": [
+    "ulw-loop",
+    "rules",
+    "comment-checker",
+    "git-bash-mcp",
+    "lsp",
+    "lsp-daemon"
+  ],
+  "utilitySkills": [
+    "ast-grep",
+    "debugging",
+    "programming",
+    "frontend",
+    "data-scientist",
+    "git-master",
+    "eval-integrity"
+  ]
+}

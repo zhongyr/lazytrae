@@ -1,0 +1,13 @@
+{
+  "name": "lazytrae",
+  "version": "0.1.0",
+  "description": "LazyCodex workflows and evidence engine adapted for TRAE CLI.",
+  "author": {
+    "name": "LazyTrae contributors"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/zhongyr/lazytrae",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "review-work"
+  short_description: "Review a diff or completed implementation for correctness, regre"
+  default_prompt: "Use $review-work to handle the requested task with TRAE CLI."
