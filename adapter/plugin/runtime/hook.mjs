@@ -49,7 +49,7 @@ if (mode === 'workflow' && isCancellation && session && cwd) {
     }
   }
 } else if (event === 'SessionStart') {
-  output = context(`LazyTrae is available. Explicit ulw requests use the lazytrae:ultrawork skill. Runtime: ${command}. Session scope: ${JSON.stringify(session)}. Read ${join(pluginRoot, 'HOST.md')} for TRAE conventions. Ordinary tasks do not start a loop.`);
+  output = context(`LazyTrae is available. Explicit ulw requests use the lazytrae:ultrawork skill. Runtime: ${command}. Session scope: ${JSON.stringify(session)}. Read ${join(pluginRoot, 'HOST.md')} for TRAE conventions. For permitted delegation use models route with the active schema's available models; honor user model restrictions and inheritance. Ordinary tasks do not start a loop.`);
 } else if (event === 'UserPromptSubmit' && typeof payload.prompt === 'string' && /^(?:\s*)(?:\$|\/)?(?:lazytrae:)?(?:ulw|ultrawork|ulw-loop)(?=\s|:|$)/i.test(payload.prompt)) {
   if (session && cwd) rmSync(pauseFile, { force: true });
   output = context(`The user requested ultrawork. Read ${join(pluginRoot, 'skills/ultrawork/SKILL.md')}. Use --session-id ${JSON.stringify(session)} for this run. Preserve the user's scope, budget and cancellation. Do not create a host goal unless explicitly requested.`);

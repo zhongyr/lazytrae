@@ -34,7 +34,7 @@ try {
   } else if (command === '--version') {
     console.log(JSON.parse(readFileSync(join(plugin, '.codex-plugin/plugin.json'), 'utf8')).version);
   } else if (['help', '--help', '-h'].includes(command)) {
-    console.log('LazyTrae\n  lazytrae install    Install the TRAE plugin\n  lazytrae doctor     Validate the installed plugin\n  lazytrae uninstall  Remove the plugin\n  lazytrae ulw-loop <command> --session-id <id>\n  lazytrae git mcp | lsp mcp | rules <command>\n\nRequires Node.js 20+ and TRAE CLI. No Codex installation is needed.');
+    console.log('LazyTrae\n  lazytrae install    Install the TRAE plugin\n  lazytrae doctor     Validate the installed plugin\n  lazytrae uninstall  Remove the plugin\n  lazytrae models route --role <agent_type> | --all\n  lazytrae ulw-loop <command> --session-id <id>\n  lazytrae git mcp | lsp mcp | rules <command>\n\nRequires Node.js 20+ and TRAE CLI. No Codex installation is needed.');
   } else {
     const result = spawnSync(process.execPath, [join(plugin, 'runtime/cli.mjs'), command, ...args], { stdio: 'inherit' });
     if (result.error) throw result.error;

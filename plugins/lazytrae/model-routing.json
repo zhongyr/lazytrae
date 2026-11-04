@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "mode": "auto",
+  "profiles": {
+    "fast": [
+      { "model_provider": "trae", "model": "DeepSeek-V4.1-Flash" },
+      { "model_provider": "trae", "model": "DeepSeek-V4-Flash" },
+      { "model_provider": "trae", "model": "GLM-5.3-Flash" },
+      { "model_provider": "trae", "model": "Gemini-3-Flash-Preview" },
+      { "model_provider": "trae", "model": "Doubao-Seed-2.1-Lite" },
+      { "model_provider": "trae", "model": "Doubao-Seed-2.1-Turbo" }
+    ],
+    "standard": [
+      { "model_provider": "trae", "model": "GPT-6-Astra" },
+      { "model_provider": "trae", "model": "GPT-6.1-Sol" },
+      { "model_provider": "trae", "model": "GPT-5.6-Sol" },
+      { "model_provider": "trae", "model": "GPT-5.6-Terra" },
+      { "model_provider": "trae", "model": "GPT-5.5" },
+      { "model_provider": "trae", "model": "GPT-5.2" },
+      { "model_provider": "trae", "model": "Doubao-Seed-2.1-Pro" },
+      { "model_provider": "trae", "model": "Seed-2.1-Pro-0915" },
+      { "model_provider": "trae", "model": "DeepSeek-V4-Pro" },
+      { "model_provider": "trae", "model": "GLM-5.3" },
+      { "model_provider": "trae", "model": "Kimi-K3" }
+    ],
+    "deep": [
+      { "model_provider": "trae", "model": "GPT-6.1-Sol" },
+      { "model_provider": "trae", "model": "GPT-6-Astra" },
+      { "model_provider": "trae", "model": "GPT-5.6-Sol" },
+      { "model_provider": "trae", "model": "GPT-5.6-Terra" },
+      { "model_provider": "trae", "model": "GPT-5.5" },
+      { "model_provider": "trae", "model": "GPT-5.2" },
+      { "model_provider": "trae", "model": "DeepSeek-V4-Pro" },
+      { "model_provider": "trae", "model": "Doubao-Seed-2.1-Pro" },
+      { "model_provider": "trae", "model": "GLM-5.3" },
+      { "model_provider": "trae", "model": "Kimi-K3" }
+    ]
+  },
+  "roles": {
+    "lazytrae-explorer": "fast",
+    "lazytrae-worker-low": "standard",
+    "lazytrae-librarian": "fast",
+    "lazytrae-worker-medium": "standard",
+    "lazytrae-qa-executor": "standard",
+    "lazytrae-worker-high": "deep",
+    "lazytrae-plan": "deep",
+    "lazytrae-metis": "deep",
+    "lazytrae-momus": "deep",
+    "lazytrae-code-reviewer": "deep",
+    "lazytrae-gate-reviewer": "deep",
+    "lazytrae-clone-fidelity-reviewer": "deep"
+  }
+}

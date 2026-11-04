@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,4 +25,14 @@ test('release tarball runs independently of its source checkout', t => {
   const result = spawnSync(process.execPath, [join(dir, 'package/bin/lazytrae.js'), 'ulw-loop', 'create-goals', '--session-id', 'packed', '--brief', 'Packaged goal', '--json'], { cwd: dir, encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).plan.brief.trim(), 'Packaged goal');
+  const available = join(dir, 'models.json');
+  writeFileSync(available, JSON.stringify([{ provider: 'trae', name: 'GPT-6-Astra' }]));
+  const routingEnv = { ...process.env, PLUGIN_DATA: join(dir, 'data') };
+  delete routingEnv.LAZYTRAE_MODEL_CONFIG;
+  const routed = spawnSync(process.execPath, [join(dir, 'package/bin/lazytrae.js'), 'models', 'route',
+    '--role', 'lazytrae-worker-medium', '--available-models', available], { cwd: dir, env: routingEnv, encoding: 'utf8' });
+  assert.equal(routed.status, 0, routed.stderr);
+  assert.deepEqual(JSON.parse(routed.stdout).spawn, {
+    agent_type: 'lazytrae-worker-medium', fork_turns: 'none', model_provider: 'trae', model: 'GPT-6-Astra',
+  });
 });

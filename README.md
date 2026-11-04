@@ -3,9 +3,10 @@
 [LazyCodex](https://github.com/code-yeongyu/lazycodex) workflows and evidence loops,
 adapted for **TRAE CLI**. Independent fork; no Codex installation required.
 
-LazyTrae adds 20 skills, 12 model-inheriting agent roles, project-rule and workflow
-hooks, the upstream durable goal/evidence engine, and bundled LSP/Git Bash MCP
-servers. It uses the model and permissions you already selected in TRAE.
+LazyTrae adds 20 skills, 12 agent roles, configurable role-to-model routing,
+project-rule and workflow hooks, the upstream durable goal/evidence engine, and
+bundled LSP/Git Bash MCP servers. It preserves your parent model and permissions;
+permitted child tasks can use available models selected by the routing policy.
 
 This is an initial **0.1.0** port. It is not a benchmarked performance improvement
 over stock TRAE, Codex, Claude Code or OmO.
@@ -85,7 +86,7 @@ are aliases for the corresponding legacy CLI flags.
 | --- | --- |
 | Ultrawork, plan, execute, research | TRAE-native workflows with explicit scope and evidence |
 | Durable goal loop | Upstream engine: session isolation, steering, criteria, retries and quality gates |
-| Worker/explorer/planner/reviewer roles | 12 plugin-contained roles; all inherit the host model |
+| Worker/explorer/planner/reviewer roles | 12 plugin-contained roles; available-model routing with inheritance fallback |
 | Project rules and comment checking | TRAE event adapters; automated comment checking requires an optional binary |
 | LSP | Bundled MCP daemon; config under `.trae`, existing language servers required |
 | Git Bash | Windows execution; diagnostic tools on macOS/Linux, where the host shell handles commands |
@@ -96,8 +97,32 @@ Browser automation, dedicated team mode, coding-session history tools, the
 upstream slop-removal workflow and upstream bug-report/contribution automation
 are **not ported in 0.1.0**. Browser/ast-grep/Python/language-server binaries are
 not bundled. Remote search MCPs, telemetry, auto-update, Codex bootstrap, forced
-model routing, spawn enforcement and the unlimited-budget hook are excluded.
+model-default changes, spawn enforcement and the unlimited-budget hook are excluded.
 Automatic per-edit LSP checks are omitted; use the LSP tools explicitly.
+
+## Model routing
+
+For permitted delegation, the orchestrator resolves the selected role before
+calling TRAE's native spawn tool. The quality-first default prefers
+`DeepSeek-V4.1-Flash` for code/document research, `GPT-6-Astra` for
+small/standard implementation, and `GPT-6.1-Sol` for complex implementation/planning/review.
+It tries available candidates in order and inherits when none is available.
+These are configurable preferences, not benchmark results.
+
+```sh
+node bin/lazytrae.js models route --all
+node bin/lazytrae.js models route --role lazytrae-worker-high --provider trae --model Kimi-K3
+node bin/lazytrae.js models route --role lazytrae-worker-high --inherit
+```
+
+Explicit user model choices take precedence and are validated. Native role
+files retain `model: inherit`; older hosts and full-history forks use inheritance.
+The parent model, host defaults and effort are preserved. The active spawn
+schema's model list is authoritative; use `--available-models <json-file>` for
+that snapshot, otherwise the resolver queries `traecli models --json`.
+
+Read [model routing](plugins/lazytrae/MODEL_ROUTING.md) for ordered candidates,
+custom providers, configuration precedence and dispatch integration.
 
 Project rules load from `.trae/rules`, `.omo/rules`, `.claude/rules`,
 `.cursor/rules`, `.github/instructions`, `CONTEXT.md` and Copilot instructions.

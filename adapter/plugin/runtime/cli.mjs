@@ -5,7 +5,10 @@ import { pluginRoot, runtimeEnv } from './environment.mjs';
 
 Object.assign(process.env, runtimeEnv());
 const [command = 'help', ...args] = process.argv.slice(2);
-if (command === 'ulw-loop') {
+if (command === 'models') {
+  const { modelsCommand } = await import('./models.mjs');
+  process.exitCode = modelsCommand(args);
+} else if (command === 'ulw-loop') {
   // Preserve upstream file/schema compatibility, expose host-neutral flag aliases.
   const mapped = args.map(a => a.replace(/^--host-goal-json(?==|$)/, '--codex-goal-json').replace(/^--host-goal-mode(?==|$)/, '--codex-goal-mode'));
   const { ulwLoopCommand } = await import('../components/ulw-loop/dist/cli-commands.js');
@@ -17,7 +20,7 @@ if (command === 'ulw-loop') {
   child.on('exit', (code, signal) => { process.exitCode = code ?? (signal ? 1 : 0); });
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => child.kill(signal));
 } else if (command === 'help' || command === '--help' || command === '-h') {
-  console.log('LazyTrae runtime\n  lazytrae ulw-loop <command> --session-id <id>\n  lazytrae git mcp\n  lazytrae lsp mcp\n  lazytrae rules <command>\n  lazytrae comment-checker <command>\n\nUse `ulw-loop help` for ledger commands. Legacy --codex-goal-* flags are also accepted.');
+  console.log('LazyTrae runtime\n  lazytrae models route --role <agent_type> | --all\n  lazytrae ulw-loop <command> --session-id <id>\n  lazytrae git mcp\n  lazytrae lsp mcp\n  lazytrae rules <command>\n  lazytrae comment-checker <command>\n\nUse `ulw-loop help` for ledger commands. Legacy --codex-goal-* flags are also accepted.');
 } else {
   console.error(`Unknown command: ${command}`);
   process.exitCode = 1;

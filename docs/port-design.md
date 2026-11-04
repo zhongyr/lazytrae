@@ -13,6 +13,14 @@ mandatory. State is repository-local under `.omo` to retain upstream compatibili
 TRAE's native plugin loader discovers the agent Markdown files. Each role uses
 `model: inherit`; the installer delegates plugin registration to `traecli` and
 does not need to merge TOML, create user roles or modify any model settings.
+For permitted child delegation, the maintained model resolver supplies explicit
+spawn overrides from a configurable role policy. It uses the active session
+catalog or `traecli models --json`, matching provider/name pairs rather than
+backend/config aliases. Explicit user choices win; candidate exhaustion,
+unsupported override schemas and deliberate full-history forks inherit.
+The orchestrator applies the result after inspecting the actual spawn schema;
+hooks announce the workflow but do not mutate spawn requests. Parent models and
+reasoning effort remain unchanged by the default policy.
 
 Hooks accept the TRAE JSON event protocol, tolerate absent optional fields, and
 normalize shell payload aliases before calling upstream engines. The workflow
